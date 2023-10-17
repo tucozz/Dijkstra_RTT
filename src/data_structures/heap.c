@@ -108,11 +108,11 @@ void heap_push(Heap *heap, int node, double priority){
 
 int heap_empty(Heap *heap){return heap->size == 0;}
 
-void *heap_min(Heap *heap){return heap->nodes[0].data;}
+int heap_min(Heap *heap){return heap->nodes[0].data;}
 
 double heap_min_priority(Heap *heap){return heap->nodes[0].priority;}
 
-void *heap_pop(Heap *heap){
+int heap_pop(Heap *heap){
     //retira o minimo do heap e seta sua posição como -1
     heap->size--;
     int pop = heap->nodes[0].data;
