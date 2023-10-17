@@ -1,17 +1,15 @@
-
 #include "heap.h"
-#include "hash.h"
 #include <stdlib.h>
 
 typedef struct
 {
-    void *data;
+    int data;
     double priority;
 }HeapNode;
 
 struct Heap
 {
-    HashTable *hash;
+    int *positions;
     HeapNode *nodes;
     int size;
     int capacity;
@@ -24,17 +22,15 @@ static int node_idx_left_child(int idx){return 2*idx + 1;}
 static int node_idx_right_child(int idx){return 2*idx + 2;}
 
 static void _heapify_idx_swap(Heap *heap, int idx1, int idx2){
-    //muda na hashtable primeiro
-    void *hash_idx1 = hash_table_get(heap->hash, heap->nodes[idx1].data); 
-    void *hash_idx2 = hash_table_get(heap->hash, heap->nodes[idx2].data); 
-
-    hash_table_set(heap->hash, heap->nodes[idx1].data, hash_idx2);
-    hash_table_set(heap->hash, heap->nodes[idx2].data, hash_idx1);
+    //muda na tabela primeiro
+    int auxpos = heap->positions[idx1];
+    heap->positions[idx1] = heap->positions[idx2];
+    heap->positions[idx2] = auxpos;
 
     //depois muda no heap mesmo
-    HeapNode aux = heap->nodes[idx1];
+    HeapNode auxnode = heap->nodes[idx1];
     heap->nodes[idx1] = heap->nodes[idx2];
-    heap->nodes[idx2] = aux;
+    heap->nodes[idx2] = auxnode;
 }
 
 static int _heapify(Heap *h, int idx_init){
@@ -69,56 +65,45 @@ static int _heapify_down(Heap *h, int idx_init){
     return current;
 }
 
-Heap *heap_construct(HashTable *hash){
+Heap *heap_construct(size_t size){
     Heap *h = malloc(sizeof(Heap));
     h->size = 0;
-    h->capacity = 10;
+    h->capacity = size;
     h->nodes = calloc(h->capacity, sizeof(HeapNode));
-    h->hash = hash;
+    h->positions = calloc(size, sizeof(int));
+    for(int i = 0; i < size; i++){
+        h->positions[i] = -1;
+    }
 
     return h;
 }
 
-void *heap_push(Heap *heap, void *data, double priority){
-    //checa pra ver se o valor ja existe
-    void *old = hash_table_get(heap->hash, data);
-
+void heap_push(Heap *heap, int node, double priority){
+    int nodepos = heap->positions[node];
     //se ja existir, atualiza o valor e ajeita o heap (pra cima ou pra baixo)
-    if(old){
-        if(heap->nodes[*(int *)old].priority > priority){
-            heap->nodes[*(int *)old].priority = priority;
-            _heapify(heap, *(int *)old);
+    if(nodepos != -1){
+        if(heap->nodes[nodepos].priority > priority){
+            heap->nodes[nodepos].priority = priority;
+            _heapify(heap, nodepos);
         }
             
-        else if(heap->nodes[*(int *)old].priority < priority){
-            heap->nodes[*(int *)old].priority = priority;
-            _heapify_down(heap, *(int *)old);
+        else if(heap->nodes[nodepos].priority < priority){
+            heap->nodes[nodepos].priority = priority;
+            _heapify_down(heap, nodepos);
         }
-
-        //retorna o void *data que foi enviado para que ele possa ser desalocado
-        return data;
     }
 
     //se o valor não existir, insere normalmente no final e faz heapify
-    if(heap->size == heap->capacity){
-        heap->capacity = 2*heap->capacity;
-        realloc(heap->nodes, heap->capacity);
-    }
-    HeapNode node;
-    node.data = data;
-    node.priority = priority;
+    HeapNode heapnode;
+    heapnode.data = node;
+    heapnode.priority = priority;
+    heap->nodes[heap->size++] = heapnode;
 
-    heap->nodes[heap->size] = node;
-    heap->size++;
+    //ajeita ele para a posicao certa no heap e salva em new_pos
+    int new_pos = _heapify(heap, heap->size - 1);
 
-    int hash_new_idx = _heapify(heap, heap->size - 1);
-    int *int_ptr = malloc(sizeof(int));
-    *int_ptr = hash_new_idx;
-    void *prev = hash_table_set(heap->hash, data, int_ptr);
-    if(prev)
-        free(prev);
-
-    return NULL;
+    //coloca na tabela a nova posicao do node no heap
+    heap->positions[node] = new_pos;
 }
 
 int heap_empty(Heap *heap){return heap->size == 0;}
@@ -128,24 +113,15 @@ void *heap_min(Heap *heap){return heap->nodes[0].data;}
 double heap_min_priority(Heap *heap){return heap->nodes[0].priority;}
 
 void *heap_pop(Heap *heap){
+    //retira o minimo do heap e seta sua posição como -1
     heap->size--;
-    void *pop = heap->nodes[0].data;
+    int pop = heap->nodes[0].data;
+    heap->positions[pop] = -1;
 
-    void *hash_pop = hash_table_pop(heap->hash, heap->nodes[0].data);
-    free(hash_pop);
-
+    //coloca o do final no lugar do minimo e ajeita ele no heap
     heap->nodes[0] = heap->nodes[heap->size];
-    int *zero = malloc(sizeof(int));
-    *zero = 0;
-    int deletazero = 1;
-    if(hash_table_num_elems(heap->hash) != 0){
-        void *prev = hash_table_set(heap->hash, heap->nodes[0].data, zero);
-        deletazero = 0;
-        free(prev);
-    }
-    if(deletazero)
-        free(zero);
     _heapify_down(heap, 0);
+
     return pop;
 }
 
