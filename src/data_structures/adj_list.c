@@ -4,6 +4,7 @@
 // Estrutura para representar um nó em uma lista de adjacências
 struct AdjListNode {
     int destino;
+    double peso;
     struct AdjListNode* proximo;
 };
 
@@ -19,7 +20,7 @@ struct Grafo {
 };
 
 // Função para criar um novo nó de lista de adjacências
-struct AdjListNode* criarAdjListNode(int destino) {
+struct AdjListNode* criarAdjListNode(int destino, float peso) {
     struct AdjListNode* novoNo = (struct AdjListNode*)malloc(sizeof(struct AdjListNode));
     novoNo->destino = destino;
     novoNo->proximo = NULL;
@@ -43,8 +44,8 @@ struct Grafo* criarGrafo(int numVertices) {
 }
 
 // Função para adicionar uma aresta direcionada de u para v no grafo
-void adicionarAresta(struct Grafo* grafo, int u, int v) {
-    struct AdjListNode* novoNo = criarAdjListNode(v);
+void adicionarAresta(struct Grafo* grafo, int u, int v, float peso) {
+    struct AdjListNode* novoNo = criarAdjListNode(v, peso);
     novoNo->proximo = grafo->listaAdjacencias[u].cabeca;
     grafo->listaAdjacencias[u].cabeca = novoNo;
 }
