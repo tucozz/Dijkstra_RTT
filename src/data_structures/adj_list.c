@@ -1,51 +1,66 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../headers/adj_list.h"
 
 // Estrutura para representar um nó em uma lista de adjacências
-struct AdjListNode {
-    int destino;
-    double peso;
-    struct AdjListNode* proximo;
+struct adjListNode
+{
+    int vertex_id;
+    double weight;
+    struct adjListNode *next;
 };
 
 // Estrutura para representar uma lista de adjacências para um vértice
-struct AdjList {
-    struct AdjListNode* cabeca;
-};
-
-// Estrutura para representar um grafo com um número fixo de vértices
-struct Grafo {
-    int numVertices;
-    struct AdjList* listaAdjacencias;
+struct adjList
+{
+    struct adjListNode *head;
 };
 
 // Função para criar um novo nó de lista de adjacências
-struct AdjListNode* criarAdjListNode(int destino, float peso) {
-    struct AdjListNode* novoNo = (struct AdjListNode*)malloc(sizeof(struct AdjListNode));
-    novoNo->destino = destino;
-    novoNo->proximo = NULL;
-    return novoNo;
+struct adjListNode *adjListNode_construct(int id, double peso)
+{
+    struct adjListNode *newNo = (struct adjListNode *)malloc(sizeof(struct adjListNode));
+    newNo->vertex_id = id;
+    newNo->weight = peso;
+    newNo->next = NULL;
+    return newNo;
 }
 
-// Função para criar um grafo com um número especificado de vértices
-struct Grafo* criarGrafo(int numVertices) {
-    struct Grafo* grafo = (struct Grafo*)malloc(sizeof(struct Grafo));
-    grafo->numVertices = numVertices;
+adjList *empty_adjList_arr_construct(int n_vertex)
+{
+    adjList *list = malloc(n_vertex * sizeof(adjList));
 
-    // Aloca memória para a matriz de listas de adjacências
-    grafo->listaAdjacencias = (struct AdjList*)malloc(numVertices * sizeof(struct AdjList));
-
-    // Inicializa todas as listas de adjacências como vazias
-    for (int i = 0; i < numVertices; ++i) {
-        grafo->listaAdjacencias[i].cabeca = NULL;
+    for (int i = 0; i < n_vertex; i++)
+    {
+        list[i].head = NULL;
     }
 
-    return grafo;
+    return list;
 }
 
-// Função para adicionar uma aresta direcionada de u para v no grafo
-void adicionarAresta(struct Grafo* grafo, int u, int v, float peso) {
-    struct AdjListNode* novoNo = criarAdjListNode(v, peso);
-    novoNo->proximo = grafo->listaAdjacencias[u].cabeca;
-    grafo->listaAdjacencias[u].cabeca = novoNo;
+void add_neighbor_to_list(adjList *array_adj, int vertex, int neighbor, double weight)
+{
+    struct adjListNode *node = adjListNode_construct(neighbor, weight);
+
+    node->next = array_adj[vertex].head;
+    array_adj[vertex].head = node;
+}
+
+void print_adjList(adjList list)
+{
+    struct adjListNode *node = list.head;
+    while (node != NULL)
+    {
+        printf("n:%d p:%lf, ", node->vertex_id, node->weight);
+        node = node->next;
+    }
+}
+void print_adjList_arr(adjList *list_arr, int arr_size)
+{
+    for (int i = 0; i < arr_size; i++)
+    {
+        printf("%d -> ", i);
+        print_adjList(list_arr[i]);
+        printf("\n");
+    }
 }

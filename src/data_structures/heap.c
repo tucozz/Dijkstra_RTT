@@ -1,4 +1,4 @@
-#include "heap.h"
+/*#include "heap.h"
 #include <stdlib.h>
 
 typedef struct
@@ -36,7 +36,7 @@ static void _heapify_idx_swap(Heap *heap, int idx1, int idx2){
 static int _heapify(Heap *h, int idx_init){
     if(h->size == 0)
         return idx_init;
-    
+
     int current = idx_init;
     while(current != 0 && h->nodes[node_idx_parent(current)].priority > h->nodes[current].priority){
         _heapify_idx_swap(h, current, node_idx_parent(current));
@@ -86,7 +86,7 @@ void heap_push(Heap *heap, int node, double priority){
             heap->nodes[nodepos].priority = priority;
             _heapify(heap, nodepos);
         }
-            
+
         else if(heap->nodes[nodepos].priority < priority){
             heap->nodes[nodepos].priority = priority;
             _heapify_down(heap, nodepos);
@@ -129,3 +129,4 @@ void heap_destroy(Heap *heap){
     free(heap->nodes);
     free(heap);
 }
+*/
