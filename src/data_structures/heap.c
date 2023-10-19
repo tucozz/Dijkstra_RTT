@@ -1,4 +1,4 @@
-/*#include "heap.h"
+#include "../../headers/heap.h"
 #include <stdlib.h>
 
 typedef struct
@@ -22,10 +22,11 @@ static int node_idx_left_child(int idx){return 2*idx + 1;}
 static int node_idx_right_child(int idx){return 2*idx + 2;}
 
 static void _heapify_idx_swap(Heap *heap, int idx1, int idx2){
+    //idx1 = 0, idx2 = 2
     //muda na tabela primeiro
-    int auxpos = heap->positions[idx1];
-    heap->positions[idx1] = heap->positions[idx2];
-    heap->positions[idx2] = auxpos;
+    int auxpos = heap->positions[idx1]; // auxpos = 1
+    heap->positions[idx1] = heap->positions[idx2]; //vetor agora fica 2 0 2 -1 -1
+    heap->positions[idx2] = auxpos; //vetor agora fica 2 0 1 -1 -1
 
     //depois muda no heap mesmo
     HeapNode auxnode = heap->nodes[idx1];
@@ -93,17 +94,20 @@ void heap_push(Heap *heap, int node, double priority){
         }
     }
 
-    //se o valor não existir, insere normalmente no final e faz heapify
-    HeapNode heapnode;
-    heapnode.data = node;
-    heapnode.priority = priority;
-    heap->nodes[heap->size++] = heapnode;
+    else{
+        //se o valor não existir, insere normalmente no final e faz heapify
+        HeapNode heapnode;
+        heapnode.data = node;
+        heapnode.priority = priority;
+        heap->positions[node] = heap->size;
+        heap->nodes[heap->size++] = heapnode;
 
-    //ajeita ele para a posicao certa no heap e salva em new_pos
-    int new_pos = _heapify(heap, heap->size - 1);
+        //ajeita ele para a posicao certa no heap e salva em new_pos
+        int new_pos = _heapify(heap, heap->size - 1);
 
-    //coloca na tabela a nova posicao do node no heap
-    heap->positions[node] = new_pos;
+        //coloca na tabela a nova posicao do node no heap
+        heap->positions[node] = new_pos;
+    }
 }
 
 int heap_empty(Heap *heap){return heap->size == 0;}
@@ -125,8 +129,25 @@ int heap_pop(Heap *heap){
     return pop;
 }
 
+void heap_debug(Heap *heap){
+    printf("Nodes:\n");
+    for(int i = 0; i < heap->size; i++){
+        printf("%d ", heap->nodes[i].data);
+    }
+    printf("\n");
+    printf("Prioridades:\n");
+    for(int i = 0; i < heap->size; i++){
+        printf("%f ", heap->nodes[i].priority);
+    }
+    printf("\n");
+    printf("Positions:\n");
+    for(int i = 0; i < heap->capacity; i++){
+        printf("%d ", heap->positions[i]);
+    }
+    printf("\n\n");
+}
+
 void heap_destroy(Heap *heap){
     free(heap->nodes);
     free(heap);
 }
-*/

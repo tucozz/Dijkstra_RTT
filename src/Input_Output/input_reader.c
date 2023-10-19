@@ -16,7 +16,7 @@ Graph *graph_read(char *filepath)
 
     if (file == NULL)
     {
-        printf("Erro ao abrir o arquivo!\n");
+        printf("Erro ao abrir o arquivo %s!\n", filepath);
         exit(1);
     }
 
@@ -51,6 +51,7 @@ Graph *graph_read(char *filepath)
         add_edge_u_to_v(graph, aux, adj, distance);
     }
 
+    //FOR DEBUGGING
     print_graph(graph);
 
     fclose(file);
