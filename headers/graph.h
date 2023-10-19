@@ -12,5 +12,6 @@ Graph *graph_construct(int num_vertex);
 void add_edge_u_to_v(struct Graph *graph, int u, int v, double weight);
 void print_graph(Graph *g);
 void define_vertex_type(Graph *graph, int vertex, char type);
+int graph_get_num_vertex(Graph *graph);
 
 #endif

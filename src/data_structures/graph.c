@@ -39,3 +39,7 @@ void define_vertex_type(Graph *graph, int vertex, char type)
 {
     graph->vertex_type[vertex] = type;
 }
+
+int graph_get_num_vertex(Graph *graph){
+    return graph->n_vertex;
+}
