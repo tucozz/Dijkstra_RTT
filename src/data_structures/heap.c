@@ -22,13 +22,11 @@ static int node_idx_left_child(int idx){return 2*idx + 1;}
 static int node_idx_right_child(int idx){return 2*idx + 2;}
 
 static void _heapify_idx_swap(Heap *heap, int idx1, int idx2){
-    //idx1 = 0, idx2 = 2
-    //muda na tabela primeiro
-    int auxpos = heap->positions[idx1]; // auxpos = 1
-    heap->positions[idx1] = heap->positions[idx2]; //vetor agora fica 2 0 2 -1 -1
-    heap->positions[idx2] = auxpos; //vetor agora fica 2 0 1 -1 -1
+    //troca primeiro na tabela de posicoes
+    heap->positions[heap->nodes[idx1].data] = idx2;
+    heap->positions[heap->nodes[idx2].data] = idx1;
 
-    //depois muda no heap mesmo
+    //depois no heap
     HeapNode auxnode = heap->nodes[idx1];
     heap->nodes[idx1] = heap->nodes[idx2];
     heap->nodes[idx2] = auxnode;
@@ -103,10 +101,7 @@ void heap_push(Heap *heap, int node, double priority){
         heap->nodes[heap->size++] = heapnode;
 
         //ajeita ele para a posicao certa no heap e salva em new_pos
-        int new_pos = _heapify(heap, heap->size - 1);
-
-        //coloca na tabela a nova posicao do node no heap
-        heap->positions[node] = new_pos;
+        _heapify(heap, heap->size - 1);
     }
 }
 
