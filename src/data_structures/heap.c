@@ -115,10 +115,11 @@ int heap_pop(Heap *heap){
     //retira o minimo do heap e seta sua posição como -1
     heap->size--;
     int pop = heap->nodes[0].data;
-    heap->positions[pop] = -1;
 
     //coloca o do final no lugar do minimo e ajeita ele no heap
     heap->nodes[0] = heap->nodes[heap->size];
+    heap->positions[heap->nodes[0].data] = 0;
+    heap->positions[pop] = -1;
     _heapify_down(heap, 0);
 
     return pop;
