@@ -1,7 +1,21 @@
-//TODO: STRUCT CONTENDO ADJ LIST, DISTANCIAS[] E PREV[]
+#include "../headers/graph.h"
 
-//TODO: FUNCAO PARA O RTT OFICIAL
+typedef struct Rtt Rtt;
 
-//TODO: FUNCAO PARA O RTT APROXIMADO
+// returns a blank rtt, that contais all the distances between the nodes
+Rtt *rtt_construct(Graph *graph);
 
-//AS FUNÇÕES DEVEM PREPARAR PRA IMPRIMIR NA SAIDA JA
+// destroy the rtt
+void rtt_destroy(Rtt *rtt);
+
+// returns the rtt distance between the source and the destination
+double rtt_weight(Graph *graph, int source, int destination);
+
+// returns the rtt* distance between the source and the destination
+double rtt_star_weight(Graph *graph, int source, int destination);
+
+// fills a blank rtt with the original rtt algorithm
+Rtt *rtt_run(Graph *graph);
+
+// fills a blank rtt with the rtt* algorithm
+Rtt *rtt_star_run(Graph *graph);

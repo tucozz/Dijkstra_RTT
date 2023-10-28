@@ -6,9 +6,12 @@ struct Graph
     int n_vertex;
     char *vertex_type; // client out servidor or monitor
     adjList *adj_list;
+    int *servers_idx;
+    int *clients_idx;
+    int *monitors_idx;
 };
 
-Graph *graph_construct(int num_vertex)
+Graph *graph_construct(size_t num_vertex, size_t n_server, size_t n_client, size_t n_monitor)
 {
     struct Graph *graph = (struct Graph *)malloc(sizeof(struct Graph));
     graph->n_vertex = num_vertex;
@@ -17,6 +20,10 @@ Graph *graph_construct(int num_vertex)
 
     graph->vertex_type = (char *)calloc(num_vertex, sizeof(char)); // ver se o calloc zera todos os bits
 
+    graph->servers_idx = (int *)malloc(n_server * sizeof(int)); // aloca vetor de servidores
+    graph->clients_idx = (int *)malloc(n_client * sizeof(int)); // aloca vetor de clientes
+    graph->monitors_idx = (int *)malloc(n_monitor * sizeof(int)); // aloca vetor de monitores
+    
     return graph;
 }
 

@@ -22,6 +22,7 @@ int main(int argc, char **argv)
     // adicionar todas arestas como prioridade DOUBLE_MAX ou coisa assim, e só s como 0
     // ver se funciona mesmo
 
+
     // Escreve o output
     // write_output_in_file_(argv[2]);
 

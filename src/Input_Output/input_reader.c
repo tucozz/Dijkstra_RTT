@@ -21,28 +21,29 @@ Graph *graph_read(char *filepath)
     }
 
     fscanf(file, "%d %d\n", &n_vertex, &n_edges);
-
-    Graph *graph = graph_construct(n_vertex); // constroi grafo
-
     fscanf(file, "%d %d %d\n", &n_server, &n_client, &n_monitor);
+
+    Graph *graph = graph_construct(n_vertex, n_server, n_client, n_monitor); // constroi grafo
 
     for (int s = 0; s < n_server; s++)
     {
         fscanf(file, "%d\n", &aux); // define como servidor
         define_vertex_type(graph, aux, SERVER);
-
+        graph_set_server_idx(graph, s, aux);
     }
 
     for (int c = 0; c < n_client; c++)
     {
         fscanf(file, "%d\n", &aux); // define como cliente
         define_vertex_type(graph, aux, CLIENT);
+        graph_set_client_idx(graph, c, aux);
     }
 
     for (int m = 0; m < n_monitor; m++)
     {
         fscanf(file, "%d\n", &aux); // define como monitor
         define_vertex_type(graph, aux, MONITOR);
+        graph_set_monitor_idx(graph, m, aux);
     }
 
     for (int e = 0; e < n_edges; e++)
