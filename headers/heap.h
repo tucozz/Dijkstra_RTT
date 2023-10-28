@@ -13,5 +13,6 @@ double heap_min_priority(Heap *heap);
 int heap_pop(Heap *heap);
 void heap_debug(Heap *heap);
 void heap_destroy(Heap *heap);
+int get_heap_size(Heap *heap);
 
 #endif

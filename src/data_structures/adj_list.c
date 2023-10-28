@@ -2,6 +2,16 @@
 #include <stdlib.h>
 #include "../../headers/adj_list.h"
 
+int get_id_vtx_weight_pair(vtx_weight_pair a)
+{
+    return a.vertex_id;
+}
+
+double get_weight_vtx_weight_pair(vtx_weight_pair a)
+{
+    return a.weight;
+}
+
 // Estrutura para representar um nó em uma lista de adjacências
 struct adjListNode
 {
@@ -11,10 +21,6 @@ struct adjListNode
 };
 
 // Estrutura para representar uma lista de adjacências para um vértice
-struct adjList
-{
-    struct adjListNode *head;
-};
 
 // Função para criar um novo nó de lista de adjacências
 struct adjListNode *adjListNode_construct(int id, double peso)
@@ -63,4 +69,65 @@ void print_adjList_arr(adjList *list_arr, int arr_size)
         print_adjList(list_arr[i]);
         printf("\n");
     }
+}
+
+adjList get_adjList(adjList *array, int current_v)
+{
+    return array[current_v];
+}
+
+// implementação de um iterador para lista encadeada de adj **********************
+
+struct Iterator
+{
+    struct adjListNode *current; // Nó atual do iterador
+};
+
+Iterator *createIterator(adjList lista)
+{
+    Iterator *iterator = (Iterator *)malloc(sizeof(Iterator));
+    if (iterator == NULL)
+    {
+        perror("Erro ao alocar memória para o iterador");
+        exit(1);
+    }
+    iterator->current = lista.head;
+    return iterator;
+}
+
+void destroyIterator(Iterator *iterator)
+{
+    free(iterator);
+}
+
+void next(Iterator *iterator)
+{
+    if (iterator != NULL && iterator->current != NULL)
+    {
+        iterator->current = iterator->current->next;
+    }
+}
+
+int has_next(Iterator *iterator)
+{
+    return (iterator->current->next != NULL);
+}
+
+vtx_weight_pair getCurrent(Iterator *iterator)
+{
+    vtx_weight_pair edge;
+    edge.vertex_id = iterator->current->vertex_id;
+    edge.weight = iterator->current->weight;
+
+    return edge;
+}
+
+int hasCurrent(Iterator *iterator)
+{
+    if (iterator->current)
+    {
+        return 1;
+    }
+    else
+        return 0;
 }

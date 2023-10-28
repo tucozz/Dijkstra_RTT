@@ -1,10 +1,10 @@
 #include "../../headers/graph.h"
-#include "../../headers/adj_list.h"
+//#include "../../headers/adj_list.h"
 
 struct Graph
 {
     int n_vertex;
-    char *vertex_type;
+    char *vertex_type; // client out servidor or monitor
     adjList *adj_list;
 };
 
@@ -40,6 +40,12 @@ void define_vertex_type(Graph *graph, int vertex, char type)
     graph->vertex_type[vertex] = type;
 }
 
-int graph_get_num_vertex(Graph *graph){
+int graph_get_num_vertex(Graph *graph)
+{
     return graph->n_vertex;
+}
+
+adjList *graph_get_arr_adjList(Graph *g)
+{
+    return g->adj_list;
 }

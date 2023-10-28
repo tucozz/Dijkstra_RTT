@@ -3,12 +3,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct vtx_weight_pair
+{
+    int vertex_id;
+    double weight;
+};
+
+struct adjList
+{
+    struct adjListNode *head;
+};
+
 typedef struct adjList adjList;
+typedef struct vtx_weight_pair vtx_weight_pair;
+typedef struct Iterator Iterator;
+
+double get_weight_vtx_weight_pair(vtx_weight_pair a);
+int get_id_vtx_weight_pair(vtx_weight_pair a);
+
+adjList get_adjList(adjList *array, int current_v);
 
 adjList *empty_adjList_arr_construct(int n_vertex);
 void add_neighbor_to_list(adjList *array_adj, int vertex, int neighbor, double weight);
 
 struct AdjListNode *AdjListNode_construct(int destino, double peso);
 void print_adjList_arr(adjList *list_arr, int arr_size);
+
+// iterator funcitons
+Iterator *createIterator(adjList lista);
+void destroyIterator(Iterator *iterator);
+void next(Iterator *iterator);
+int has_next(Iterator *iterator);
+vtx_weight_pair getCurrent(Iterator *iterator);
+int hasCurrent(Iterator *iterator);
 
 #endif
