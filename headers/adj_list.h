@@ -3,14 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct vtx_weight_pair
+typedef struct
 {
     int vertex_id;
     double weight;
-};
+}vtx_weight_pair;
 
 typedef struct adjList adjList;
-typedef struct vtx_weight_pair vtx_weight_pair;
 typedef struct Iterator Iterator;
 
 double get_weight_vtx_weight_pair(vtx_weight_pair a);
