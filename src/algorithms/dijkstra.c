@@ -38,15 +38,6 @@ void update_vertex_label_pathLenght(double *distances_arr, double weight, int v)
 double *dijkstra_algorithm(Graph *graph, int origin)
 {
 
-    /*Dijkstra algorithm:
-    1. encontrar o vertice com a menor distancia conhecida e fazer dele o VERTICE ATUAL
-    2.mudar o status deste para visitado
-    3.pegar todos os adijacentes do VERTICE ATUAL e atualizamos as distancias se forem menor
-        if( pl(current)+w(current,v)< pl(v)) => atualizamos o pai(v) para current e pl(v) vira a nova distancia encontrada;
-    4. repetir os passos 1 2 e 3 até que nao haja mais vertices nao visitados ou se todos os nao visitados ainda estiverem com a distancia infinita
-    */
-
-
     int n_vertex = graph_get_num_vertex(graph);
     int n_univisited = n_vertex;
 
@@ -102,20 +93,8 @@ double *dijkstra_algorithm(Graph *graph, int origin)
         destroyIterator(it);
     }
 
+    heap_destroy(heap);
+    free(vertex_label_arr);
+
     return distances_arr;
 }
-
-// vertex_label vertex_label_arr_construct(vertex_label *arr, int origin, int size)
-// {
-
-//     for (int i = 0; i < size; i++)
-//     {
-//         vertex_label v;
-//         v.parent = NIL;
-//         v.status = UNVISITED;
-//         arr[i] = v;
-//     }
-
-//     // set origin vertex
-//     arr[origin].path_lenght = 0;
-// }

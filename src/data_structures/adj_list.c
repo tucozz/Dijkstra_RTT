@@ -44,6 +44,21 @@ adjList *empty_adjList_arr_construct(int n_vertex)
     return list;
 }
 
+void adjList_arr_destroy(adjList *list_arr, int arr_size){
+    for (int i = 0; i < arr_size; i++)
+    {
+        struct adjListNode *node = list_arr[i].head;
+        while (node != NULL)
+        {
+            struct adjListNode *temp = node;
+            node = node->next;
+            free(temp);
+        }
+    }
+    free(list_arr);
+}
+
+
 void add_neighbor_to_list(adjList *array_adj, int vertex, int neighbor, double weight)
 {
     struct adjListNode *node = adjListNode_construct(neighbor, weight);

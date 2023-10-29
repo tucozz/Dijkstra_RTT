@@ -30,12 +30,13 @@ Graph *graph_construct(size_t num_vertex, size_t n_server, size_t n_client, size
     graph->n_servers = n_server;
     graph->n_clients = n_client;
     graph->n_monitors = n_monitor;
-    
+
     return graph;
 }
 
 void graph_destroy(Graph *graph)
 {
+    adjList_arr_destroy(graph->adj_list, graph->n_vertex);
     free(graph->vertex_type);
     free(graph->servers_idx);
     free(graph->clients_idx);

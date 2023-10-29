@@ -164,6 +164,7 @@ void heap_debug(Heap *heap)
 void heap_destroy(Heap *heap)
 {
     free(heap->nodes);
+    free(heap->positions);
     free(heap);
 }
 

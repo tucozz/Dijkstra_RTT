@@ -33,7 +33,12 @@ int main(int argc, char **argv)
 
 
     // Escreve o output
-    // write_output_in_file_(argv[2]);
+    write_output_in_file_(argv[2]);
+
+    // Libera a memoria
+    graph_destroy(graph);
+    rtt_destroy(rtt);
+    rtt_destroy(rtt2);
 
     return 0;
 }
