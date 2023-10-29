@@ -59,7 +59,7 @@ double rtt_star_weight(int source, int destination, int *monitors, int n_monitor
     double min = INFINITY;
     for(int i = 0; i < n_monitors; i++){
         int monitor = monitors[i];
-        double weight = dijkstra_matrix[source][monitor] + dijkstra_matrix[monitor][destination];
+        double weight = dijkstra_matrix[source][monitor] + dijkstra_matrix[monitor][destination] + dijkstra_matrix[destination][monitor] + dijkstra_matrix[monitor][source];
         if(min > weight){
             min = weight;
         }
