@@ -53,7 +53,7 @@ Graph *graph_read(char *filepath)
     }
 
     //FOR DEBUGGING
-    print_graph(graph);
+    //print_graph(graph);
 
     fclose(file);
     return graph;

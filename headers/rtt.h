@@ -23,3 +23,5 @@ Rtt *rtt_star_run(Graph *graph);
 // prints the rtt
 void rtt_print(Rtt *rtt, Graph *graph);
 
+// returns the S_to_C_rtt matrix
+double **rtt_get_S_to_C_rtt(Rtt *rtt);

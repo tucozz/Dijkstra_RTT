@@ -166,5 +166,8 @@ void rtt_print(Rtt *rtt, Graph *graph){
     }
 }
 
+double **rtt_get_S_to_C_rtt(Rtt *rtt){
+    return rtt->S_to_C_rtt;
+}
 
 
