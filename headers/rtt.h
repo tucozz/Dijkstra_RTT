@@ -9,10 +9,10 @@ Rtt *rtt_construct(Graph *graph);
 void rtt_destroy(Rtt *rtt);
 
 // returns the rtt distance between the source and the destination
-double rtt_weight(Graph *graph, int source, int destination);
+double rtt_weight(int source, int destination, double **dijkstra_matrix);
 
 // returns the rtt* distance between the source and the destination
-double rtt_star_weight(Graph *graph, int source, int destination);
+double rtt_star_weight(int source, int destination, int *monitors, int n_monitors, double **dijkstra_matrix);
 
 // fills a blank rtt with the original rtt algorithm
 Rtt *rtt_run(Graph *graph);

@@ -1,18 +1,23 @@
-#include ../headers/rtt.h;
+#include "../../headers/rtt.h"
+#include "../../headers/dijkstra.h"
+#include <stdlib.h>
+#include <float.h>
+
+#define INFINITY DBL_MAX;
 
 struct Rtt{
     double **S_to_C_rtt; // S_to_C_shortest[S][C] = RTT weight from s to c
     double **S_to_M_rtt; // S_to_M_shortest[S][M] = RTT weight from s to m
     double **M_to_C_rtt; // M_to_C_shortest[M][C] = RTT weight from m to c
+    size_t n_servers;
+    size_t n_clients;
+    size_t n_monitors;
 };
 
 double **blank_matrix(int n, int m){
     double **matrix = malloc(sizeof(double *) * n);
     for(int i = 0; i < n; i++){
         matrix[i] = malloc(sizeof(double) * m);
-        for(int j = 0; j < m; j++){
-            matrix[i][j] = INFINITY;
-        }
     }
     return matrix;
 }
@@ -27,17 +32,21 @@ void free_matrix(double **matrix, int n){
 Rtt *rtt_construct(Graph *graph){
     Rtt *rtt = malloc(sizeof(Rtt));
     
-    rtt->S_to_C_rtt = blank_matrix(graph_get_n_servers(graph), graph_get_n_clients(graph));
-    rtt->S_to_M_rtt = blank_matrix(graph_get_n_servers(graph), graph_get_n_monitors(graph));
-    rtt->M_to_C_rtt = blank_matrix(graph_get_n_monitors(graph), graph_get_n_clients(graph));
+    rtt->S_to_C_rtt = blank_matrix(graph_get_num_servers(graph), graph_get_num_clients(graph));
+    rtt->S_to_M_rtt = blank_matrix(graph_get_num_servers(graph), graph_get_num_monitors(graph));
+    rtt->M_to_C_rtt = blank_matrix(graph_get_num_monitors(graph), graph_get_num_clients(graph));
+
+    rtt->n_servers = graph_get_num_servers(graph);
+    rtt->n_clients = graph_get_num_clients(graph);
+    rtt->n_monitors = graph_get_num_monitors(graph);
 
     return rtt;
 }
 
 void rtt_destroy(Rtt *rtt){
-    free_matrix(rtt->S_to_C_rtt, graph_get_n_servers(graph), graph_get_n_clients(graph));
-    free_matrix(rtt->S_to_M_rtt, graph_get_n_servers(graph), graph_get_n_monitors(graph));
-    free_matrix(rtt->M_to_C_rtt, graph_get_n_monitors(graph), graph_get_n_clients(graph));
+    free_matrix(rtt->S_to_C_rtt, rtt->n_servers);
+    free_matrix(rtt->S_to_M_rtt, rtt->n_servers);
+    free_matrix(rtt->M_to_C_rtt, rtt->n_monitors);
 
     free(rtt);
 }
@@ -59,34 +68,34 @@ double rtt_star_weight(int source, int destination, int *monitors, int n_monitor
 }
 
 Rtt *rtt_run(Graph *graph){
-    double **vertices_distances = malloc(sizeof(double *) * graph_get_n_vertices(graph));
+    double **vertices_distances = malloc(sizeof(double *) * graph_get_num_vertex(graph));
 
-    for(int i = 0; i < graph_get_n_vertices(graph); i++){
-        vertices_distances[i] = dijkstra(graph, i);
+    for(int i = 0; i < graph_get_num_vertex(graph); i++){
+        vertices_distances[i] = dijkstra_algorithm(graph, i);
     }
 
     Rtt *rtt = rtt_construct(graph);
 
-    for(int i = 0; i < graph_get_n_servers(graph); i++){
+    for(int i = 0; i < graph_get_num_servers(graph); i++){
         int server = graph_get_server_index(graph, i);
-        for(int j = 0; j < graph_get_n_clients(graph); j++){
+        for(int j = 0; j < graph_get_num_clients(graph); j++){
             int client = graph_get_client_index(graph, j);
             rtt->S_to_C_rtt[i][j] = rtt_weight(server, client, vertices_distances);
         }
-        for(int j = 0; j < graph_get_n_monitors(graph); j++){
+        for(int j = 0; j < graph_get_num_monitors(graph); j++){
             int monitor = graph_get_monitor_index(graph, j);
             rtt->S_to_M_rtt[i][j] = rtt_weight(server, monitor, vertices_distances);
         }
     }
-    for(int i = 0; i < graph_get_n_monitors(graph); i++){
+    for(int i = 0; i < graph_get_num_monitors(graph); i++){
         int monitor = graph_get_monitor_index(graph, i);
-        for(int j = 0; j < graph_get_n_clients(graph); j++){
+        for(int j = 0; j < graph_get_num_clients(graph); j++){
             int client = graph_get_client_index(graph, j);
             rtt->M_to_C_rtt[i][j] = rtt_weight(monitor, client, vertices_distances);
         }
     }
 
-    for(int i = 0; i < graph_get_n_vertices(graph); i++){
+    for(int i = 0; i < graph_get_num_vertex(graph); i++){
         free(vertices_distances[i]);
     }
     free(vertices_distances);
@@ -95,34 +104,34 @@ Rtt *rtt_run(Graph *graph){
 }
 
 Rtt *rtt_star_run(Graph *graph){
-    double **vertices_distances = malloc(sizeof(double *) * graph_get_n_vertices(graph));
+    double **vertices_distances = malloc(sizeof(double *) * graph_get_num_vertex(graph));
 
-    for(int i = 0; i < graph_get_n_vertices(graph); i++){
-        vertices_distances[i] = dijkstra(graph, i);
+    for(int i = 0; i < graph_get_num_vertex(graph); i++){
+        vertices_distances[i] = dijkstra_algorithm(graph, i);
     }
 
     Rtt *rtt = rtt_construct(graph);
 
-    for(int i = 0; i < graph_get_n_servers(graph); i++){
+    for(int i = 0; i < graph_get_num_servers(graph); i++){
         int server = graph_get_server_index(graph, i);
-        for(int j = 0; j < graph_get_n_clients(graph); j++){
+        for(int j = 0; j < graph_get_num_clients(graph); j++){
             int client = graph_get_client_index(graph, j);
-            rtt->S_to_C_rtt[i][j] = rtt_star_weight(server, client, graph_get_monitors(graph), graph_get_n_monitors(graph), vertices_distances);
+            rtt->S_to_C_rtt[i][j] = rtt_star_weight(server, client, graph_get_monitors(graph), graph_get_num_monitors(graph), vertices_distances);
         }
-        for(int j = 0; j < graph_get_n_monitors(graph); j++){
+        for(int j = 0; j < graph_get_num_monitors(graph); j++){
             int monitor = graph_get_monitor_index(graph, j);
-            rtt->S_to_M_rtt[i][j] = rtt_star_weight(server, monitor, graph_get_monitors(graph), graph_get_n_monitors(graph), vertices_distances);
+            rtt->S_to_M_rtt[i][j] = rtt_star_weight(server, monitor, graph_get_monitors(graph), graph_get_num_monitors(graph), vertices_distances);
         }
     }
-    for(int i = 0; i < graph_get_n_monitors(graph); i++){
+    for(int i = 0; i < graph_get_num_monitors(graph); i++){
         int monitor = graph_get_monitor_index(graph, i);
-        for(int j = 0; j < graph_get_n_clients(graph); j++){
+        for(int j = 0; j < graph_get_num_clients(graph); j++){
             int client = graph_get_client_index(graph, j);
-            rtt->M_to_C_rtt[i][j] = rtt_star_weight(monitor, client, graph_get_monitors(graph), graph_get_n_monitors(graph), vertices_distances);
+            rtt->M_to_C_rtt[i][j] = rtt_star_weight(monitor, client, graph_get_monitors(graph), graph_get_num_monitors(graph), vertices_distances);
         }
     }
 
-    for(int i = 0; i < graph_get_n_vertices(graph); i++){
+    for(int i = 0; i < graph_get_num_vertex(graph); i++){
         free(vertices_distances[i]);
     }
     free(vertices_distances);
