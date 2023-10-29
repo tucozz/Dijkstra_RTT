@@ -3,12 +3,15 @@
 
 struct Graph
 {
-    int n_vertex;
     char *vertex_type; // client out servidor or monitor
     adjList *adj_list;
     int *servers_idx;
     int *clients_idx;
     int *monitors_idx;
+    int n_vertex;
+    int n_servers;
+    int n_clients;
+    int n_monitors;
 };
 
 Graph *graph_construct(size_t num_vertex, size_t n_server, size_t n_client, size_t n_monitor)
@@ -20,9 +23,13 @@ Graph *graph_construct(size_t num_vertex, size_t n_server, size_t n_client, size
 
     graph->vertex_type = (char *)calloc(num_vertex, sizeof(char)); // ver se o calloc zera todos os bits
 
-    graph->servers_idx = (int *)malloc(n_server * sizeof(int)); // aloca vetor de servidores
-    graph->clients_idx = (int *)malloc(n_client * sizeof(int)); // aloca vetor de clientes
-    graph->monitors_idx = (int *)malloc(n_monitor * sizeof(int)); // aloca vetor de monitores
+    graph->servers_idx = (int *)calloc(n_server, sizeof(int)); // aloca vetor de servidores
+    graph->clients_idx = (int *)calloc(n_client, sizeof(int)); // aloca vetor de clientes
+    graph->monitors_idx = (int *)calloc(n_monitor, sizeof(int)); // aloca vetor de monitores
+
+    graph->n_servers = n_server;
+    graph->n_clients = n_client;
+    graph->n_monitors = n_monitor;
     
     return graph;
 }
@@ -63,17 +70,17 @@ int graph_get_num_vertex(Graph *graph)
 
 int graph_get_num_servers(Graph *graph)
 {
-    return sizeof(graph->servers_idx) / sizeof(int);
+    return graph->n_servers;
 }
 
 int graph_get_num_clients(Graph *graph)
 {
-    return sizeof(graph->clients_idx) / sizeof(int);
+    return graph->n_clients;
 }
 
 int graph_get_num_monitors(Graph *graph)
 {
-    return sizeof(graph->monitors_idx) / sizeof(int);
+    return graph->n_monitors;
 }
 
 int *graph_get_servers(Graph *graph)
