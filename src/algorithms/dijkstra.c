@@ -21,7 +21,6 @@ void initialize_heap(Heap *h, int origin)
 {
     for (int i = 0; i < get_heap_size(h); i++)
     {
-
         heap_push(h, i, INFINITY);
     }
 
@@ -39,72 +38,48 @@ double *dijkstra_algorithm(Graph *graph, int origin)
 {
 
     int n_vertex = graph_get_num_vertex(graph);
-    int n_univisited = n_vertex;
-
-    // constroying heap
-    Heap *heap = heap_construct(n_vertex);
-    // constroying dijsktra table
-    vertex_label *vertex_label_arr = malloc(sizeof(vertex_label) * n_vertex);
+    int n_edges = graph_get_num_edges(graph);
 
     double *distances_arr = malloc(sizeof(double) * n_vertex);
-    for(int i = 0; i < n_vertex; i++){
+    vertex_label *vertex_labels = malloc(sizeof(vertex_label) * n_vertex);
+
+    Heap *h = heap_construct(n_vertex);
+
+    initialize_heap(h, origin);
+
+    for (int i = 0; i < n_vertex; i++)
+    {
         distances_arr[i] = INFINITY;
+        vertex_labels[i].parent = NIL;
+        vertex_labels[i].status = UNVISITED;
     }
+
     distances_arr[origin] = 0;
 
-    adjList **arr_adjList = graph_get_arr_adjList(graph);
-
-    initialize_heap(heap, origin);
-
-    while (n_univisited != 0)
+    while (get_heap_size(h) > 0)
     {
-        int current_v = heap_pop(heap);
+        int u = heap_pop(h);
 
-        adjList *current_adjList = get_adjList(arr_adjList, current_v);
+        vertex_labels[u].status = VISITED;
 
-        Iterator *it = createIterator(current_adjList);
+        adjList *adj_list = graph_get_adj_list(graph, u);
 
-        while (1)
+        for (int i = 0; i < adj_list_get_size(adj_list); i++)
         {
-            
-            vtx_weight_pair edge = getCurrent(it);
+            int v = adj_list_get_vertex(adj_list, i);
+            double weight = adj_list_get_weight(adj_list, i);
 
-            int vtx_id = edge.vertex_id;
-            double weight = edge.weight;
-
-            double distance =  distances_arr[current_v] + weight;
-
-            heap_push(heap, vtx_id, distance); // atualiza no heap
-
-            vertex_label_arr[vtx_id].parent = current_v;
-            update_vertex_label_pathLenght(distances_arr, distance, vtx_id);
-
-            if (!has_next(it))
+            if (vertex_labels[v].status == UNVISITED)
             {
-                break;
+                update_vertex_label_pathLenght(distances_arr, distances_arr[u] + weight, v);
+                vertex_labels[v].parent = u;
+                heap_push(h, v, distances_arr[v]);
             }
-
-            next(it);
         }
-
-        vertex_label_arr[current_v].status = VISITED;
-        n_univisited--; // number of unvisited vertex
-
-        destroyIterator(it);
     }
 
-    heap_destroy(heap);
-    free(vertex_label_arr);
-
-    //DEBUG PRINT
-    printf("Distances %d:\n", origin);
-    for(int i = 0; i < n_vertex; i++){
-        if(distances_arr[i] != INFINITY)
-            printf("%d: %lf, \n", i, distances_arr[i]);
-        else
-            printf("%d: DEU ERRADO, CAMINHO NAO ENCONTRADO, \n", i);
-    }
-    printf("\n");
+    free(vertex_labels);
+    heap_destroy(h);
 
     return distances_arr;
 }

@@ -23,7 +23,7 @@ Graph *graph_read(char *filepath)
     fscanf(file, "%d %d\n", &n_vertex, &n_edges);
     fscanf(file, "%d %d %d\n", &n_server, &n_client, &n_monitor);
 
-    Graph *graph = graph_construct(n_vertex, n_server, n_client, n_monitor); // constroi grafo
+    Graph *graph = graph_construct(n_vertex, n_edges, n_server, n_client, n_monitor); // constroi grafo
 
     for (int s = 0; s < n_server; s++)
     {

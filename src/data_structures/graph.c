@@ -9,15 +9,17 @@ struct Graph
     int *clients_idx;
     int *monitors_idx;
     int n_vertex;
+    int n_edges;
     int n_servers;
     int n_clients;
     int n_monitors;
 };
 
-Graph *graph_construct(size_t num_vertex, size_t n_server, size_t n_client, size_t n_monitor)
+Graph *graph_construct(size_t num_vertex, size_t n_edges, size_t n_server, size_t n_client, size_t n_monitor)
 {
     struct Graph *graph = (struct Graph *)malloc(sizeof(struct Graph));
     graph->n_vertex = num_vertex;
+    graph->n_edges = n_edges;
 
     graph->adj_list = (adjList **)empty_adjList_arr_construct(num_vertex);
 
@@ -69,6 +71,11 @@ int graph_get_num_vertex(Graph *graph)
     return graph->n_vertex;
 }
 
+int graph_get_num_edges(Graph *graph)
+{
+    return graph->n_edges;
+}
+
 int graph_get_num_servers(Graph *graph)
 {
     return graph->n_servers;
@@ -107,6 +114,11 @@ char *graph_get_vertex_type(Graph *graph)
 adjList **graph_get_arr_adjList(Graph *g)
 {
     return g->adj_list;
+}
+
+adjList *graph_get_adj_list(Graph *g, int vertex)
+{
+    return g->adj_list[vertex];
 }
 
 int graph_get_server_index(Graph *graph, int server)

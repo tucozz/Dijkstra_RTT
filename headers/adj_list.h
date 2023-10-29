@@ -25,6 +25,10 @@ struct AdjListNode *AdjListNode_construct(int destino, double peso);
 void adjList_arr_destroy(adjList **list_arr, int arr_size);
 void print_adjList_arr(adjList **list_arr, int arr_size);
 
+int adj_list_get_size(adjList *list);
+int adj_list_get_vertex(adjList *list, int index);
+double adj_list_get_weight(adjList *list, int index);
+
 // iterator funcitons
 Iterator *createIterator(adjList *lista);
 void destroyIterator(Iterator *iterator);

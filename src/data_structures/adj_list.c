@@ -106,6 +106,38 @@ adjList *get_adjList(adjList **array, int current_v)
     return array[current_v];
 }
 
+int adjList_get_size(adjList *list)
+{
+    int size = 0;
+    struct adjListNode *node = list->head;
+    while (node != NULL)
+    {
+        size++;
+        node = node->next;
+    }
+    return size;
+}
+
+int adjList_get_vertex(adjList *list, int index)
+{
+    struct adjListNode *node = list->head;
+    for (int i = 0; i < index; i++)
+    {
+        node = node->next;
+    }
+    return node->vertex_id;
+}
+
+double adjList_get_weight(adjList *list, int index)
+{
+    struct adjListNode *node = list->head;
+    for (int i = 0; i < index; i++)
+    {
+        node = node->next;
+    }
+    return node->weight;
+}
+
 // implementação de um iterador para lista encadeada de adj **********************
 
 struct Iterator
