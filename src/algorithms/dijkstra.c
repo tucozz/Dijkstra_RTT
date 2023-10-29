@@ -2,7 +2,7 @@
 #include "../../headers/graph.h"
 #include "../../headers/adj_list.h"
 
-#include "float.h"
+#include <float.h>
 
 #define VISITED 1
 #define UNVISITED 0
@@ -19,7 +19,7 @@
 
 typedef struct
 {
-    double path_lenght;
+    //double path_lenght;
     int parent;
     char status;
 
@@ -36,14 +36,14 @@ void initialize_heap(Heap *h, int origin)
     heap_push(h, origin, 0); // set origin vertex
 }
 
-void update_vertex_label_pathLenght(vertex_label v, double weight)
+void update_vertex_label_pathLenght(double *distances_arr, double weight, int v)
 {
-    if (v.path_lenght > weight)
+    if (distances_arr[v] > weight)
     {
-        v.path_lenght = weight;
+        distances_arr[v] = weight;
     }
 }
-void dijkstra_algorithm(Graph *graph, int origin)
+double *dijkstra_algorithm(Graph *graph, int origin)
 {
 
     int n_vertex = graph_get_num_vertex(graph);
@@ -53,6 +53,11 @@ void dijkstra_algorithm(Graph *graph, int origin)
     Heap *heap = heap_construct(n_vertex);
     // constroying dijsktra table
     vertex_label *vertex_label_arr = malloc(sizeof(vertex_label) * n_vertex);
+
+    double *distances_arr = malloc(sizeof(double) * n_vertex);
+    for(int i = 0; i < n_vertex; i++){
+        distances_arr[i] = INFINITY;
+    }
 
     adjList *arr_adjList = graph_get_arr_adjList(graph);
 
@@ -70,18 +75,17 @@ void dijkstra_algorithm(Graph *graph, int origin)
         while (1)
         {
             
-
             vtx_weight_pair edge = getCurrent(it);
 
             int vtx_id = edge.vertex_id;
             double weight = edge.weight;
 
-            double distance = vertex_label_arr[current_v].path_lenght + edge.weight;
+            double distance =  distances_arr[current_v] + weight;
 
             heap_push(heap, vtx_id, distance); // atualiza no heap
 
             vertex_label_arr[vtx_id].parent = current_v;
-            update_vertex_label_pathLenght(vertex_label_arr[vtx_id], distance);
+            update_vertex_label_pathLenght(distances_arr, distance, vtx_id);
 
             if (!has_next(it))
             {
@@ -96,20 +100,21 @@ void dijkstra_algorithm(Graph *graph, int origin)
 
         destroyIterator(it);
     }
+
+    return distances_arr;
 }
 
-vertex_label vertex_label_arr_construct(vertex_label *arr, int origin, int size)
-{
+// vertex_label vertex_label_arr_construct(vertex_label *arr, int origin, int size)
+// {
 
-    for (int i = 0; i < size; i++)
-    {
-        vertex_label v;
-        v.parent = NIL;
-        v.path_lenght = INFINITY;
-        v.status = UNVISITED;
-        arr[i] = v;
-    }
+//     for (int i = 0; i < size; i++)
+//     {
+//         vertex_label v;
+//         v.parent = NIL;
+//         v.status = UNVISITED;
+//         arr[i] = v;
+//     }
 
-    // set origin vertex
-    arr[origin].path_lenght = 0;
-}
+//     // set origin vertex
+//     arr[origin].path_lenght = 0;
+// }
