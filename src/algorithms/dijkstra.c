@@ -11,7 +11,7 @@
 
 typedef struct
 {
-    //double path_lenght;
+    // double path_lenght;
     int parent;
     char status;
 
@@ -26,6 +26,15 @@ void initialize_heap(Heap *h, int origin)
     }
 
     heap_push(h, origin, 0); // set origin vertex
+}
+
+void initialize_vtx_label_array(vertex_label *array, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        array[i].status = UNVISITED;
+        array[i].parent = NIL;
+    }
 }
 
 void update_vertex_label_pathLenght(double *distances_arr, double weight, int v)
@@ -45,9 +54,11 @@ double *dijkstra_algorithm(Graph *graph, int origin)
     Heap *heap = heap_construct(n_vertex);
     // constroying dijsktra table
     vertex_label *vertex_label_arr = malloc(sizeof(vertex_label) * n_vertex);
+    initialize_vtx_label_array(vertex_label_arr, n_vertex);
 
     double *distances_arr = malloc(sizeof(double) * n_vertex);
-    for(int i = 0; i < n_vertex; i++){
+    for (int i = 0; i < n_vertex; i++)
+    {
         distances_arr[i] = INFINITY;
     }
     distances_arr[origin] = 0;
@@ -56,7 +67,7 @@ double *dijkstra_algorithm(Graph *graph, int origin)
 
     initialize_heap(heap, origin);
 
-    while (n_univisited != 0)
+    while (!heap_empty(heap))
     {
         int current_v = heap_pop(heap);
 
@@ -64,20 +75,22 @@ double *dijkstra_algorithm(Graph *graph, int origin)
 
         Iterator *it = createIterator(current_adjList);
 
-        while (1)
+        while (hasCurrent(it))
         {
-            
+
             vtx_weight_pair edge = getCurrent(it);
 
             int vtx_id = edge.vertex_id;
             double weight = edge.weight;
 
-            double distance =  distances_arr[current_v] + weight;
+            double distance = distances_arr[current_v] + weight;
 
-            heap_push(heap, vtx_id, distance); // atualiza no heap
-
-            vertex_label_arr[vtx_id].parent = current_v;
-            update_vertex_label_pathLenght(distances_arr, distance, vtx_id);
+            if (vertex_label_arr[vtx_id].status == UNVISITED)
+            {
+                heap_push(heap, vtx_id, distance); // atualiza no heap
+                vertex_label_arr[vtx_id].parent = current_v;
+                update_vertex_label_pathLenght(distances_arr, distance, vtx_id);
+            }
 
             if (!has_next(it))
             {
@@ -96,15 +109,17 @@ double *dijkstra_algorithm(Graph *graph, int origin)
     heap_destroy(heap);
     free(vertex_label_arr);
 
-    //DEBUG PRINT
+    // DEBUG PRINT
     printf("Distances %d:\n", origin);
-    for(int i = 0; i < n_vertex; i++){
-        if(distances_arr[i] != INFINITY)
+    for (int i = 0; i < n_vertex; i++)
+    {
+        if (distances_arr[i] != INFINITY)
             printf("%d: %lf, \n", i, distances_arr[i]);
         else
             printf("%d: DEU ERRADO, CAMINHO NAO ENCONTRADO, \n", i);
     }
     printf("\n");
+    
 
     return distances_arr;
 }

@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     for(int i = 0; i < graph_get_num_servers(graph); i++){
         for(int j = 0; j < graph_get_num_clients(graph); j++){
             double rtt_ratio = S_to_C_rtt[i][j] / S_to_C_rtt_star[i][j];
-            //printf("%d %d %lf\n", graph_get_server_index(graph, i), graph_get_client_index(graph, j), rtt_ratio);
+            printf("%d %d %lf\n", graph_get_server_index(graph, i), graph_get_client_index(graph, j), rtt_ratio);
         }
     }
 
