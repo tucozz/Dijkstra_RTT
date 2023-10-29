@@ -11,7 +11,7 @@
 
 typedef struct
 {
-    //double path_lenght;
+    // double path_lenght;
     int parent;
     char status;
 
@@ -25,6 +25,15 @@ void initialize_heap(Heap *h, int origin)
     }
 
     heap_push(h, origin, 0); // set origin vertex
+}
+
+void initialize_vtx_label_array(vertex_label *array, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        array[i].status = UNVISITED;
+        array[i].parent = NIL;
+    }
 }
 
 void update_vertex_label_pathLenght(double *distances_arr, double weight, int v)
