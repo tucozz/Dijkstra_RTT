@@ -52,7 +52,7 @@ double *dijkstra_algorithm(Graph *graph, int origin)
     }
     distances_arr[origin] = 0;
 
-    adjList *arr_adjList = graph_get_arr_adjList(graph);
+    adjList **arr_adjList = graph_get_arr_adjList(graph);
 
     initialize_heap(heap, origin);
 
@@ -60,7 +60,7 @@ double *dijkstra_algorithm(Graph *graph, int origin)
     {
         int current_v = heap_pop(heap);
 
-        adjList current_adjList = get_adjList(arr_adjList, current_v);
+        adjList *current_adjList = get_adjList(arr_adjList, current_v);
 
         Iterator *it = createIterator(current_adjList);
 

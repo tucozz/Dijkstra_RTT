@@ -4,7 +4,7 @@
 struct Graph
 {
     char *vertex_type; // client out servidor or monitor
-    adjList *adj_list;
+    adjList **adj_list;
     int *servers_idx;
     int *clients_idx;
     int *monitors_idx;
@@ -19,7 +19,7 @@ Graph *graph_construct(size_t num_vertex, size_t n_server, size_t n_client, size
     struct Graph *graph = (struct Graph *)malloc(sizeof(struct Graph));
     graph->n_vertex = num_vertex;
 
-    graph->adj_list = (adjList *)empty_adjList_arr_construct(num_vertex);
+    graph->adj_list = (adjList **)empty_adjList_arr_construct(num_vertex);
 
     graph->vertex_type = (char *)calloc(num_vertex, sizeof(char)); // ver se o calloc zera todos os bits
 
@@ -104,7 +104,7 @@ char *graph_get_vertex_type(Graph *graph)
     return graph->vertex_type;
 }
 
-adjList *graph_get_arr_adjList(Graph *g)
+adjList **graph_get_arr_adjList(Graph *g)
 {
     return g->adj_list;
 }
