@@ -19,3 +19,7 @@ Rtt *rtt_run(Graph *graph);
 
 // fills a blank rtt with the rtt* algorithm
 Rtt *rtt_star_run(Graph *graph);
+
+// prints the rtt
+void rtt_print(Rtt *rtt, Graph *graph);
+

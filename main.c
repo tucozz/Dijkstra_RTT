@@ -3,6 +3,7 @@
 #include "headers/graph.h"
 #include "headers/heap.h"
 #include "headers/dijkstra.h"
+#include "headers/rtt.h"
 
 int main(int argc, char **argv)
 {
@@ -15,7 +16,15 @@ int main(int argc, char **argv)
     // Le o input
     Graph *graph = graph_read(argv[1]);
 
-    dijkstra_algorithm(graph, 0);
+    printf("RTT ORIGINAL:\n");
+    Rtt *rtt = rtt_run(graph);
+
+    rtt_print(rtt, graph);
+
+    printf("\nRTT*:\n");
+    Rtt *rtt2 = rtt_star_run(graph);
+
+    rtt_print(rtt2, graph);
 
     // TODO: o heap parece estar funcionando
     // fazer um iterador para o grafo, pra poder adicionar aresta por aresta no heap

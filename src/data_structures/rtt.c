@@ -139,5 +139,32 @@ Rtt *rtt_star_run(Graph *graph){
     return rtt;
 }
 
+void rtt_print(Rtt *rtt, Graph *graph){
+    printf("S_to_C_rtt\n");
+    for(int i = 0; i < rtt->n_servers; i++){
+        printf("%d: ", graph_get_server_index(graph, i));
+        for(int j = 0; j < rtt->n_clients; j++){
+            printf("to %d: %lf ", graph_get_client_index(graph, j), rtt->S_to_C_rtt[i][j]);
+        }
+        printf("\n");
+    }
+    printf("S_to_M_rtt\n");
+    for(int i = 0; i < rtt->n_servers; i++){
+        printf("%d: ", graph_get_server_index(graph, i));
+        for(int j = 0; j < rtt->n_monitors; j++){
+            printf("to %d: %lf ", graph_get_monitor_index(graph, j), rtt->S_to_M_rtt[i][j]);
+        }
+        printf("\n");
+    }
+    printf("M_to_C_rtt\n");
+    for(int i = 0; i < rtt->n_monitors; i++){
+        printf("%d: ", graph_get_monitor_index(graph, i));
+        for(int j = 0; j < rtt->n_clients; j++){
+            printf("to %d: %lf ", graph_get_client_index(graph, j), rtt->M_to_C_rtt[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 
 
