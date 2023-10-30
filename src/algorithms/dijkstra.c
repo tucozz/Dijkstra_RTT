@@ -92,11 +92,6 @@ double *dijkstra_algorithm(Graph *graph, int origin)
                 update_vertex_label_pathLenght(distances_arr, distance, vtx_id);
             }
 
-            if (!has_next(it))
-            {
-                break;
-            }
-
             next(it);
         }
 
@@ -119,7 +114,6 @@ double *dijkstra_algorithm(Graph *graph, int origin)
             printf("%d: DEU ERRADO, CAMINHO NAO ENCONTRADO, \n", i);
     }
     printf("\n");
-    
 
     return distances_arr;
 }

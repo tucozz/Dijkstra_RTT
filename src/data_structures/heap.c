@@ -96,12 +96,6 @@ void heap_push(Heap *heap, int node, double priority)
             heap->nodes[nodepos].priority = priority;
             _heapify(heap, nodepos);
         }
-
-        else if (heap->nodes[nodepos].priority < priority)
-        {
-            heap->nodes[nodepos].priority = priority;
-            _heapify_down(heap, nodepos);
-        }
     }
 
     else
