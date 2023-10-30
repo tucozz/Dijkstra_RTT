@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/trab1",
-            "args": ["inputs/1.txt", "teste.txt"],
+            "args": ["inputs/N10_S3_C3_M3.txt", "teste.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/",
             "environment": [],

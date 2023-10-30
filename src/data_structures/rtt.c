@@ -139,6 +139,30 @@ Rtt *rtt_star_run(Graph *graph){
     return rtt;
 }
 
+Rtt *rtt_star_from_rtt(Rtt *rtt, Graph *graph){
+    Rtt *rtt_star = rtt_construct(graph);
+
+    for(int i = 0; i < rtt->n_servers; i++){
+        for(int j = 0; j < rtt->n_clients; j++){
+            int flag = 0;
+            for(int k = 0; k < rtt->n_monitors; k++){
+                if(!flag){
+                    rtt_star->S_to_C_rtt[i][j] = rtt->S_to_M_rtt[i][k] + rtt->M_to_C_rtt[k][j];
+                    flag = 1;
+                }
+                else{
+                    double weight = rtt->S_to_M_rtt[i][k] + rtt->M_to_C_rtt[k][j];
+                    if(rtt_star->S_to_C_rtt[i][j] > weight){
+                        rtt_star->S_to_C_rtt[i][j] = weight;
+                    }
+                }
+            }
+        }
+    }
+
+    return rtt_star;
+}
+
 void rtt_print(Rtt *rtt, Graph *graph){
     printf("S_to_C_rtt\n");
     for(int i = 0; i < rtt->n_servers; i++){
