@@ -83,7 +83,11 @@ double *dijkstra_algorithm(Graph *graph, int origin)
             int vtx_id = edge.vertex_id;
             double weight = edge.weight;
 
-            double distance = distances_arr[current_v] + weight;
+            //evita overflow
+            double distance = INFINITY;
+            if(distances_arr[current_v] != INFINITY){
+                distance = distances_arr[current_v] + weight;
+            }
 
             if (vertex_label_arr[vtx_id].status == UNVISITED)
             {
@@ -110,15 +114,15 @@ double *dijkstra_algorithm(Graph *graph, int origin)
     free(vertex_label_arr);
 
     // DEBUG PRINT
-    printf("Distances %d:\n", origin);
-    for (int i = 0; i < n_vertex; i++)
-    {
-        if (distances_arr[i] != INFINITY)
-            printf("%d: %lf, \n", i, distances_arr[i]);
-        else
-            printf("%d: DEU ERRADO, CAMINHO NAO ENCONTRADO, \n", i);
-    }
-    printf("\n");
+    // printf("Distances %d:\n", origin);
+    // for (int i = 0; i < n_vertex; i++)
+    // {
+    //     if (distances_arr[i] != INFINITY)
+    //         printf("%d: %lf, \n", i, distances_arr[i]);
+    //     else
+    //         printf("%d: DEU ERRADO, CAMINHO NAO ENCONTRADO, \n", i);
+    // }
+    // printf("\n");
     
 
     return distances_arr;
