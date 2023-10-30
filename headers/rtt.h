@@ -14,6 +14,9 @@ double rtt_weight(int source, int destination, double **dijkstra_matrix);
 // returns the rtt* distance between the source and the destination
 double rtt_star_weight(int source, int destination, int *monitors, int n_monitors, double **dijkstra_matrix);
 
+// returns a rtt* from a rtt
+Rtt *rtt_star_from_rtt(Rtt *rtt, Graph *graph);
+
 // fills a blank rtt with the original rtt algorithm
 Rtt *rtt_run(Graph *graph);
 
