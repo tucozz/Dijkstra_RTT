@@ -1,6 +1,15 @@
+#ifndef RTT_H
+#define RTT_H
+
 #include "../headers/graph.h"
 
 typedef struct Rtt Rtt;
+
+typedef struct{
+    int server;
+    int client;
+    double rtt_ratio;
+} rtt_ratio;
 
 // returns a blank rtt, that contais all the distances between the nodes
 Rtt *rtt_construct(Graph *graph);
@@ -28,3 +37,5 @@ void rtt_print(Rtt *rtt, Graph *graph);
 
 // returns the S_to_C_rtt matrix
 double **rtt_get_S_to_C_rtt(Rtt *rtt);
+
+#endif

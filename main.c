@@ -5,12 +5,6 @@
 #include "headers/dijkstra.h"
 #include "headers/rtt.h"
 
-typedef struct{
-    int server;
-    int client;
-    double rtt_ratio;
-} rtt_ratio;
-
 int main(int argc, char **argv)
 {
     if (argc != 3)
@@ -32,11 +26,7 @@ int main(int argc, char **argv)
 
     double **S_to_C_rtt = rtt_get_S_to_C_rtt(rtt);
     double **S_to_C_rtt_star = rtt_get_S_to_C_rtt(rtt2);
-    rtt_ratio **rtt_ratio_mat = malloc(sizeof(rtt_ratio) * graph_get_num_servers(graph));
-    for (int i = 0; i < graph_get_num_servers(graph); i++)
-    {
-        rtt_ratio_mat[i] = malloc(sizeof(rtt_ratio) * graph_get_num_clients(graph));
-    }
+    rtt_ratio *rtt_ratio_arr = malloc(sizeof(rtt_ratio) * graph_get_num_servers(graph) * graph_get_num_clients(graph));
 
     // printf("%lf" , S_to_C_rtt[0][0] / S_to_C_rtt_star[0][0]);
 
@@ -48,26 +38,11 @@ int main(int argc, char **argv)
         //printf("Server %d\n", graph_get_server_index(graph, i));
         for (int j = 0; j < graph_get_num_clients(graph); j++)
         {
-            //printf("Client %d: RTT: %lf, RTT*: %lf, RATIO:%lf\n", graph_get_client_index(graph, j) , S_to_C_rtt[i][j], S_to_C_rtt_star[i][j], S_to_C_rtt_star[i][j]/S_to_C_rtt[i][j]);
-            //printf("%lf %lf\n", S_to_C_rtt[i][j], S_to_C_rtt_star[i][j]);
-            rtt_ratio_mat[i][j].server = graph_get_server_index(graph, i);
-            rtt_ratio_mat[i][j].client = graph_get_client_index(graph, j);
-            rtt_ratio_mat[i][j].rtt_ratio = S_to_C_rtt_star[i][j]/S_to_C_rtt[i][j];
             
-        }
-    }
+            rtt_ratio_arr[i * graph_get_num_clients(graph) + j].server = graph_get_server_index(graph, i);
+            rtt_ratio_arr[i * graph_get_num_clients(graph) + j].client = graph_get_client_index(graph, j);
+            rtt_ratio_arr[i * graph_get_num_clients(graph) + j].rtt_ratio = S_to_C_rtt_star[i][j] / S_to_C_rtt[i][j];
 
-    //transform rtt_ratio_mat into an array and sort it
-    rtt_ratio *rtt_ratio_arr = malloc(sizeof(rtt_ratio) * graph_get_num_servers(graph) * graph_get_num_clients(graph));
-    int rtt_ratio_arr_index = 0;
-    for (int i = 0; i < graph_get_num_servers(graph); i++)
-    {
-        for (int j = 0; j < graph_get_num_clients(graph); j++)
-        {
-            rtt_ratio_arr[rtt_ratio_arr_index].server = rtt_ratio_mat[i][j].server;
-            rtt_ratio_arr[rtt_ratio_arr_index].client = rtt_ratio_mat[i][j].client;
-            rtt_ratio_arr[rtt_ratio_arr_index].rtt_ratio = rtt_ratio_mat[i][j].rtt_ratio;
-            rtt_ratio_arr_index++;
         }
     }
 
@@ -105,18 +80,19 @@ int main(int argc, char **argv)
 
 
     //print rtt_ratio_arr
-    for (int i = 0; i < graph_get_num_servers(graph) * graph_get_num_clients(graph); i++)
-    {
-        printf("%d %d %lf\n", rtt_ratio_arr[i].server, rtt_ratio_arr[i].client, rtt_ratio_arr[i].rtt_ratio);
-    }
+    // for (int i = 0; i < graph_get_num_servers(graph) * graph_get_num_clients(graph); i++)
+    // {
+    //     printf("%d %d %.16lf\n", rtt_ratio_arr[i].server, rtt_ratio_arr[i].client, rtt_ratio_arr[i].rtt_ratio);
+    // }
 
     // Escreve o output
-    // write_output_in_file_(argv[2]);
+    write_output_in_file_(argv[2], rtt_ratio_arr, graph_get_num_servers(graph) * graph_get_num_clients(graph));
 
     // Libera a memoria
     graph_destroy(graph);
     rtt_destroy(rtt);
     rtt_destroy(rtt2);
+    free(rtt_ratio_arr);
 
     return 0;
 }
