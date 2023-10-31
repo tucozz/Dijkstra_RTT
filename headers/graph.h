@@ -22,6 +22,7 @@ int *graph_get_servers(Graph *graph);
 int *graph_get_clients(Graph *graph);
 int *graph_get_monitors(Graph *graph);
 char *graph_get_vertex_type(Graph *graph);
+char graph_get_vertex_type_index(Graph *graph, int idx);
 void graph_destroy(Graph *graph);
 int graph_get_server_index(Graph *graph, int server_id);
 int graph_get_client_index(Graph *graph, int client_id);

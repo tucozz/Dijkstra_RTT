@@ -104,6 +104,11 @@ char *graph_get_vertex_type(Graph *graph)
     return graph->vertex_type;
 }
 
+char graph_get_vertex_type_index(Graph *graph, int idx)
+{
+    return graph->vertex_type[idx];
+}
+
 adjList **graph_get_arr_adjList(Graph *g)
 {
     return g->adj_list;

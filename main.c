@@ -5,6 +5,19 @@
 #include "headers/dijkstra.h"
 #include "headers/rtt.h"
 
+int compare_rtt_ratio(const void *a, const void *b)
+{
+    rtt_ratio *rtt_ratio_a = (rtt_ratio *)a;
+    rtt_ratio *rtt_ratio_b = (rtt_ratio *)b;
+
+    if (rtt_ratio_a->rtt_ratio < rtt_ratio_b->rtt_ratio)
+        return -1;
+    else if (rtt_ratio_a->rtt_ratio > rtt_ratio_b->rtt_ratio)
+        return 1;
+    else
+        return 0;
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 3)
@@ -47,36 +60,7 @@ int main(int argc, char **argv)
     }
 
     //sort rtt_ratio_arr
-    for (int i = 0; i < graph_get_num_servers(graph) * graph_get_num_clients(graph); i++)
-    {
-        for (int j = i + 1; j < graph_get_num_servers(graph) * graph_get_num_clients(graph); j++)
-        {
-            if (rtt_ratio_arr[i].rtt_ratio > rtt_ratio_arr[j].rtt_ratio)
-            {
-                rtt_ratio temp = rtt_ratio_arr[i];
-                rtt_ratio_arr[i] = rtt_ratio_arr[j];
-                rtt_ratio_arr[j] = temp;
-            }
-            if (rtt_ratio_arr[i].rtt_ratio == rtt_ratio_arr[j].rtt_ratio)
-            {
-                if (rtt_ratio_arr[i].server > rtt_ratio_arr[j].server)
-                {
-                    rtt_ratio temp = rtt_ratio_arr[i];
-                    rtt_ratio_arr[i] = rtt_ratio_arr[j];
-                    rtt_ratio_arr[j] = temp;
-                }
-                if (rtt_ratio_arr[i].server == rtt_ratio_arr[j].server)
-                {
-                    if (rtt_ratio_arr[i].client > rtt_ratio_arr[j].client)
-                    {
-                        rtt_ratio temp = rtt_ratio_arr[i];
-                        rtt_ratio_arr[i] = rtt_ratio_arr[j];
-                        rtt_ratio_arr[j] = temp;
-                    }
-                }
-            }
-        }
-    }
+    qsort(rtt_ratio_arr, graph_get_num_servers(graph) * graph_get_num_clients(graph), sizeof(rtt_ratio), compare_rtt_ratio);
 
 
     //print rtt_ratio_arr

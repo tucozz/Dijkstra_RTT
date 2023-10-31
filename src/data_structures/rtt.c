@@ -71,7 +71,9 @@ Rtt *rtt_run(Graph *graph){
     double **vertices_distances = malloc(sizeof(double *) * graph_get_num_vertex(graph));
 
     for(int i = 0; i < graph_get_num_vertex(graph); i++){
-        vertices_distances[i] = dijkstra_algorithm(graph, i);
+        if(graph_get_vertex_type_index(graph, i) != '\0'){
+            vertices_distances[i] = dijkstra_algorithm(graph, i);
+        }
     }
 
     Rtt *rtt = rtt_construct(graph);
@@ -107,7 +109,9 @@ Rtt *rtt_star_run(Graph *graph){
     double **vertices_distances = malloc(sizeof(double *) * graph_get_num_vertex(graph));
 
     for(int i = 0; i < graph_get_num_vertex(graph); i++){
-        vertices_distances[i] = dijkstra_algorithm(graph, i);
+        if(graph_get_vertex_type_index(graph, i) != '\0'){
+            vertices_distances[i] = dijkstra_algorithm(graph, i);
+        }
     }
 
     Rtt *rtt = rtt_construct(graph);
