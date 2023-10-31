@@ -98,7 +98,9 @@ Rtt *rtt_run(Graph *graph){
     }
 
     for(int i = 0; i < graph_get_num_vertex(graph); i++){
-        free(vertices_distances[i]);
+        if(graph_get_vertex_type_index(graph, i) != '\0'){
+            free(vertices_distances[i]);
+        }
     }
     free(vertices_distances);
 
@@ -136,7 +138,9 @@ Rtt *rtt_star_run(Graph *graph){
     }
 
     for(int i = 0; i < graph_get_num_vertex(graph); i++){
-        free(vertices_distances[i]);
+        if(graph_get_vertex_type_index(graph, i) != '\0'){
+            free(vertices_distances[i]);
+        }
     }
     free(vertices_distances);
 
