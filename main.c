@@ -10,12 +10,17 @@ int compare_rtt_ratio(const void *a, const void *b)
     rtt_ratio *rtt_ratio_a = (rtt_ratio *)a;
     rtt_ratio *rtt_ratio_b = (rtt_ratio *)b;
 
-    if (rtt_ratio_a->rtt_ratio < rtt_ratio_b->rtt_ratio)
-        return -1;
-    else if (rtt_ratio_a->rtt_ratio > rtt_ratio_b->rtt_ratio)
-        return 1;
-    else
-        return 0;
+    //compare first by ratio. If ratio is equal, compare by server index. If server index is equal, compare by client index
+    if(rtt_ratio_a->rtt_ratio != rtt_ratio_b->rtt_ratio)
+        return (rtt_ratio_a->rtt_ratio < rtt_ratio_b->rtt_ratio) ? -1 : 1;
+
+    if(rtt_ratio_a->server != rtt_ratio_b->server)
+        return (rtt_ratio_a->server < rtt_ratio_b->server) ? -1 : 1;
+
+    if(rtt_ratio_a->client != rtt_ratio_b->client)
+        return (rtt_ratio_a->client < rtt_ratio_b->client) ? -1 : 1;
+
+    return 0;
 }
 
 int main(int argc, char **argv)
@@ -26,32 +31,23 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    // Le o input
+    // Le o input e guarda em uma variavel do tipo Graph
     Graph *graph = graph_read(argv[1]);
 
+    // Não tem necessidade de calcular o RTT* do zero, mas a função está descrita no arquivo rtt.c
     Rtt *rtt = rtt_run(graph);
-    //Rtt *rtt2 = rtt_star_run(graph);
     Rtt *rtt2 = rtt_star_from_rtt(rtt, graph);
 
-    // TODO: Imprimir o arquivo de saida de modo correto
-    // Modo correto: Três colunas. Uma para a origem, uma para o destino e uma para a razao entre custos RTT e RTT*
-    // A estrutura RTT já tem os valores de RTT e RTT* para cada par de vértices. Basta calcular a razão e imprimir
-
+    // Separa os valores de RTT* e RTT uteis (S_to_C)
     double **S_to_C_rtt = rtt_get_S_to_C_rtt(rtt);
     double **S_to_C_rtt_star = rtt_get_S_to_C_rtt(rtt2);
     rtt_ratio *rtt_ratio_arr = malloc(sizeof(rtt_ratio) * graph_get_num_servers(graph) * graph_get_num_clients(graph));
 
-    // printf("%lf" , S_to_C_rtt[0][0] / S_to_C_rtt_star[0][0]);
-
-    // PRINT PARA DEBUG:
-    // TODO: Alguns valores estão dando infinito. Verificar o que está acontecendo
-    // provavelmente é o dijkstra em algum caso específico, mas verificar isso aí.")
+    // Calcula a razao entre RTT* e RTT e guarda em um vetor de rtt_ratio (é util para ordenar)
     for (int i = 0; i < graph_get_num_servers(graph); i++)
     {
-        //printf("Server %d\n", graph_get_server_index(graph, i));
         for (int j = 0; j < graph_get_num_clients(graph); j++)
         {
-            
             rtt_ratio_arr[i * graph_get_num_clients(graph) + j].server = graph_get_server_index(graph, i);
             rtt_ratio_arr[i * graph_get_num_clients(graph) + j].client = graph_get_client_index(graph, j);
             rtt_ratio_arr[i * graph_get_num_clients(graph) + j].rtt_ratio = S_to_C_rtt_star[i][j] / S_to_C_rtt[i][j];
@@ -59,15 +55,8 @@ int main(int argc, char **argv)
         }
     }
 
-    //sort rtt_ratio_arr
+    // ordena o vetor de rtt_ratio
     qsort(rtt_ratio_arr, graph_get_num_servers(graph) * graph_get_num_clients(graph), sizeof(rtt_ratio), compare_rtt_ratio);
-
-
-    //print rtt_ratio_arr
-    // for (int i = 0; i < graph_get_num_servers(graph) * graph_get_num_clients(graph); i++)
-    // {
-    //     printf("%d %d %.16lf\n", rtt_ratio_arr[i].server, rtt_ratio_arr[i].client, rtt_ratio_arr[i].rtt_ratio);
-    // }
 
     // Escreve o output
     write_output_in_file_(argv[2], rtt_ratio_arr, graph_get_num_servers(graph) * graph_get_num_clients(graph));

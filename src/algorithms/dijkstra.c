@@ -11,7 +11,6 @@
 
 typedef struct
 {
-    // double path_lenght;
     int parent;
     char status;
 
@@ -47,15 +46,17 @@ void update_vertex_label_pathLenght(double *distances_arr, double weight, int v)
 double *dijkstra_algorithm(Graph *graph, int origin)
 {
 
+    // get number of vertex
     int n_vertex = graph_get_num_vertex(graph);
     int n_univisited = n_vertex;
 
-    // constroying heap
+    // construct heap
     Heap *heap = heap_construct(n_vertex);
-    // constroying dijsktra table
+    // construct dijsktra table
     vertex_label *vertex_label_arr = malloc(sizeof(vertex_label) * n_vertex);
     initialize_vtx_label_array(vertex_label_arr, n_vertex);
 
+    // construct distances array and set origin distance to 0
     double *distances_arr = malloc(sizeof(double) * n_vertex);
     for (int i = 0; i < n_vertex; i++)
     {
@@ -63,34 +64,41 @@ double *dijkstra_algorithm(Graph *graph, int origin)
     }
     distances_arr[origin] = 0;
 
+    // get all adjList from the graph
     adjList **arr_adjList = graph_get_arr_adjList(graph);
 
+    // initialize heap
     initialize_heap(heap, origin);
 
+    // while there is unvisited vertex
     while (!heap_empty(heap))
     {
+        // get the vertex with the smallest distance
         int current_v = heap_pop(heap);
 
+        // get the adjList from the current vertex
         adjList *current_adjList = get_adjList(arr_adjList, current_v);
 
+        // iterate over the adjList
         Iterator *it = createIterator(current_adjList);
-
         while (hasCurrent(it))
         {
-
+            // get the current vertex and weight
             vtx_weight_pair edge = getCurrent(it);
 
             int vtx_id = edge.vertex_id;
             double weight = edge.weight;
 
-            //evita overflow
+            //avoid overflow
             double distance = INFINITY;
             if(distances_arr[current_v] != INFINITY){
                 distance = distances_arr[current_v] + weight;
             }
 
+            // if the vertex is unvisited
             if (vertex_label_arr[vtx_id].status == UNVISITED)
             {
+                // update the distance
                 heap_push(heap, vtx_id, distance); // atualiza no heap
                 vertex_label_arr[vtx_id].parent = current_v;
                 update_vertex_label_pathLenght(distances_arr, distance, vtx_id);
@@ -99,26 +107,16 @@ double *dijkstra_algorithm(Graph *graph, int origin)
             next(it);
         }
 
+        // set the current vertex as visited
         vertex_label_arr[current_v].status = VISITED;
         n_univisited--; // number of unvisited vertex
 
         destroyIterator(it);
     }
 
+    // free memory
     heap_destroy(heap);
     free(vertex_label_arr);
-
-    // DEBUG PRINT
-    // printf("Distances %d:\n", origin);
-    // for (int i = 0; i < n_vertex; i++)
-    // {
-    //     if (distances_arr[i] != INFINITY)
-    //         printf("%d: %lf, \n", i, distances_arr[i]);
-    //     else
-    //         printf("%d: DEU ERRADO, CAMINHO NAO ENCONTRADO, \n", i);
-    // }
-    // printf("\n");
     
-
     return distances_arr;
 }

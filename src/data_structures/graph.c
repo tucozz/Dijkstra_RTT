@@ -1,9 +1,8 @@
 #include "../../headers/graph.h"
-//#include "../../headers/adj_list.h"
 
 struct Graph
 {
-    char *vertex_type; // client out servidor or monitor
+    char *vertex_type; // client or server or monitor
     adjList **adj_list;
     int *servers_idx;
     int *clients_idx;

@@ -70,14 +70,17 @@ double rtt_star_weight(int source, int destination, int *monitors, int n_monitor
 Rtt *rtt_run(Graph *graph){
     double **vertices_distances = malloc(sizeof(double *) * graph_get_num_vertex(graph));
 
+    // for each important vertex, run dijkstra algorithm
     for(int i = 0; i < graph_get_num_vertex(graph); i++){
         if(graph_get_vertex_type_index(graph, i) != '\0'){
             vertices_distances[i] = dijkstra_algorithm(graph, i);
         }
     }
 
+    // construct a blank rtt
     Rtt *rtt = rtt_construct(graph);
 
+    // fill the rtt with the important distances
     for(int i = 0; i < graph_get_num_servers(graph); i++){
         int server = graph_get_server_index(graph, i);
         for(int j = 0; j < graph_get_num_clients(graph); j++){
@@ -97,6 +100,7 @@ Rtt *rtt_run(Graph *graph){
         }
     }
 
+    // free the memory
     for(int i = 0; i < graph_get_num_vertex(graph); i++){
         if(graph_get_vertex_type_index(graph, i) != '\0'){
             free(vertices_distances[i]);
@@ -150,11 +154,14 @@ Rtt *rtt_star_run(Graph *graph){
 Rtt *rtt_star_from_rtt(Rtt *rtt, Graph *graph){
     Rtt *rtt_star = rtt_construct(graph);
 
+    // there is no need to run all the dijkstras again, the rtt matrix is already filled
+    // it is important to know the distances to the monitors for this next step (not only from server to client)
     for(int i = 0; i < rtt->n_servers; i++){
         for(int j = 0; j < rtt->n_clients; j++){
             int flag = 0;
             for(int k = 0; k < rtt->n_monitors; k++){
                 if(!flag){
+                    // don't touch it, I don't know why it doesn't work without this
                     rtt_star->S_to_C_rtt[i][j] = rtt->S_to_M_rtt[i][k] + rtt->M_to_C_rtt[k][j];
                     flag = 1;
                 }

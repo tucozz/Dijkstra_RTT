@@ -45,6 +45,8 @@ Graph *graph_read(char *filepath)
         define_vertex_type(graph, aux, MONITOR);
         graph_set_monitor_idx(graph, m, aux);
     }
+    
+    // Qualquer node que não seja servidor, cliente ou monitor é deixado como '\0'
 
     for (int e = 0; e < n_edges; e++)
     {
@@ -52,8 +54,6 @@ Graph *graph_read(char *filepath)
         add_edge_u_to_v(graph, aux, adj, distance);
     }
 
-    //FOR DEBUGGING
-    //print_graph(graph);
 
     fclose(file);
     return graph;
