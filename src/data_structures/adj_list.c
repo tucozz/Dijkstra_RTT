@@ -20,12 +20,12 @@ struct adjListNode
     struct adjListNode *next;
 };
 
+// Estrutura para representar uma lista de adjacências para um vértice
 struct adjList
 {
     struct adjListNode *head;
 };
 
-// Estrutura para representar uma lista de adjacências para um vértice
 
 // Função para criar um novo nó de lista de adjacências
 struct adjListNode *adjListNode_construct(int id, double peso)
